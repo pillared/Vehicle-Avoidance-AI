@@ -20,6 +20,7 @@ from math import acos,sin,cos,radians,degrees,atan2,asin,acos,pi,sqrt,isclose
 import random
 import numpy as np
 import pandas as pd
+import csv
 
 
 #Global variables
@@ -31,20 +32,22 @@ azimuth = 0           # global var for azimuth
 data = pd.DataFrame()
 
 #init columns to append data to to add to dataframe and then export as csv
-current_host_latitude = []
-current_host_longitude = []
-next_host_latitude = []
-next_host_longitude = []
+host_latitude = []
+host_longitude = []
 host_speed = []
 host_azimuth = []
+host_distance = []
+host_time = []
 
-current_guest_latitude = []
-current_guest_longitude = []
-next_guest_latitude = []
-next_guest_longitude = []
+guest_latitude = []
+guest_longitude = []
 guest_speed = []
 guest_azimuth = []
+guest_distance = []
+guest_time = []
 
+intersection_latitude = []
+intersection_longitude = []
 collision = []
 
 
@@ -74,6 +77,21 @@ class Vehicle:
         del self.velocity[0] 
 
     speed = property(get_velocity, set_velocity, del_velocity)
+
+    def get_direction(self): 
+        print("getter method called") 
+        return self.velocity[1] 
+       
+     # function to set value of _age 
+    def set_direction(self, a): 
+        print("setter method called") 
+        self.velocity[1] = a 
+
+    # function to delete _age attribute 
+    def del_direction(self): 
+        del self.velocity[1] 
+
+    direction = property(get_direction, set_direction, del_direction)
 
     def describe(self):  
         print("Vehicle [%s] at (%f , %f) moving %s° at %d KPH \n" % (self.id, self.coords[0], self.coords[1], self.velocity[1], self.velocity[0]))  
@@ -283,11 +301,14 @@ def main():
     HOST_A = Vehicle("Nissan Sentra", "914h80", 33.779398, -84.413279, 50, 0)
     HOST_A.describe()
 
+
+
     HOST_TIME_TO_INTERSECTION = 0
     GUEST_TIME_TO_INTERSECTION = 1
     BOOL_TIME = False
     BOOL_COUNT = 0
-    while(BOOL_COUNT < 100):
+    while(BOOL_COUNT < 1000):
+        
         #generate vehicle at a constant distance but at a random angle from the HOST vehicle, then use half() and oppose() to calculate possible angle for guest vehicle to drive in to collide with HOST
         dirawayfrom = random.randint(0,360)
         print(dirawayfrom)
@@ -306,6 +327,14 @@ def main():
             t = GUEST_A.velocity[0] - x[0]
             GUEST_A.set_velocity(t)
         print("RANDY")
+        print(GUEST_A.velocity[0])
+        print(GUEST_A.velocity[1])
+        if(GUEST_A.velocity[0] < 0 ):
+            print("INRANDYINADAD")
+            GUEST_A.set_velocity(abs(t))
+            GUEST_A.set_direction(oppose(GUEST_A.velocity[1]))
+        print(GUEST_A.velocity[0])
+        print(GUEST_A.velocity[1])
         GUEST_A.describe()
         #find their intersection and then determine time for each one to get to intersection
         #distance half the earth arc length and then find intersection only for intersection, then scratch that and only care about points before intersection
@@ -346,10 +375,49 @@ def main():
             print("COORDINATES NEVER INTERSECTED")
         print("T\t\t\t\t",T)
         print()
+        host_latitude.append(HOST_A.coords[0])
+        host_longitude.append(HOST_A.coords[1])
+        host_speed.append(HOST_A.velocity[0])
+        host_azimuth.append(HOST_A.velocity[1])
+        host_distance.append(HOST_A_TO_POTENTIAL_COLLISION[0])
+        host_time.append(HOST_TIME_TO_INTERSECTION)
+
+        guest_latitude.append(GUEST_A.coords[0])
+        guest_longitude.append(GUEST_A.coords[1])
+        guest_speed.append(GUEST_A.velocity[0])
+        guest_azimuth.append(GUEST_A.velocity[1])
+        guest_distance.append(GUEST_A_TO_POTENTIAL_COLLISION[0])
+        guest_time.append(GUEST_TIME_TO_INTERSECTION)
+        if(T == None):
+            intersection_latitude.append(None)
+            intersection_longitude.append(None)
+        else:
+            intersection_latitude.append(T[0])
+            intersection_longitude.append(T[1])
+        collision.append(BOOL_TIME)
         print("---------------------------------------------------------------------")
     #if same time or within .25seconds, collision. mark action as True for collision, negative reward
     #if no collision, mark false for collision, positive reward.
+    
+    data["HOST_LAT"] = host_latitude
+    data["HOST_LON"] = host_longitude
+    data["HOST_AZI"] = host_azimuth
+    data["HOST_SPEED"] = host_speed
+    data["HOST_DIS"] = host_distance
+    data["HOST_TIME"] = host_time
 
+    data["GUEST_LAT"] = guest_latitude
+    data["GUEST_LON"] = guest_longitude
+    data["GUEST_AZI"] = guest_azimuth
+    data["GUEST_SPEED"] = guest_speed
+    data["GUEST_DIS"] = guest_distance
+    data["GUEST_TIME"] = guest_time
+
+    data["INTER_LAT"] = intersection_latitude
+    data["INTER_LON"] = intersection_longitude
+    data["COLLISION"] = collision
+    print(data)
+    data.to_csv('./data.csv') 
     
 if __name__ == "__main__":
     main()
