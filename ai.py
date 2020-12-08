@@ -394,7 +394,7 @@ def main():
         else:
             intersection_latitude.append(T[0])
             intersection_longitude.append(T[1])
-        collision.append(BOOL_TIME)
+        collision.append(int(BOOL_TIME))
         print("---------------------------------------------------------------------")
     #if same time or within .25seconds, collision. mark action as True for collision, negative reward
     #if no collision, mark false for collision, positive reward.
