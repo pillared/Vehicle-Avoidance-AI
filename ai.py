@@ -1,7 +1,7 @@
 
 #####################################
 #####################################
-#### Blockchain AI Vehicle System ###
+######### AI Vehicle System #########
 ###### Created by Anthony Asilo #####
 ############ aka pillared ###########
 ########### December 2020 ###########
@@ -38,6 +38,8 @@ host_speed = []
 host_azimuth = []
 host_distance = []
 host_time = []
+
+host_azi_to_guest = []
 
 guest_latitude = []
 guest_longitude = []
@@ -311,6 +313,7 @@ def main():
         
         #generate vehicle at a constant distance but at a random angle from the HOST vehicle, then use half() and oppose() to calculate possible angle for guest vehicle to drive in to collide with HOST
         dirawayfrom = random.randint(0,360)
+        host_azi_to_guest.append(dirawayfrom)
         print(dirawayfrom)
         tcoord = terminalCoords(HOST_A.coords[0], HOST_A.coords[1], dirawayfrom, radar_radius)
         print(tcoord)
@@ -401,23 +404,25 @@ def main():
     
     data["HOST_LAT"] = host_latitude
     data["HOST_LON"] = host_longitude
-    data["HOST_AZI"] = host_azimuth
+    data["HOST_DIRECTION"] = host_azimuth
     data["HOST_SPEED"] = host_speed
     data["HOST_DIS"] = host_distance
     data["HOST_TIME"] = host_time
 
+    data["HOST_AZI_TO_GUEST"] = host_azi_to_guest
+
     data["GUEST_LAT"] = guest_latitude
     data["GUEST_LON"] = guest_longitude
-    data["GUEST_AZI"] = guest_azimuth
+    data["GUEST_DIRECTION"] = guest_azimuth
     data["GUEST_SPEED"] = guest_speed
     data["GUEST_DIS"] = guest_distance
     data["GUEST_TIME"] = guest_time
 
-    data["INTER_LAT"] = intersection_latitude
-    data["INTER_LON"] = intersection_longitude
+    data["INTERSECTION_LAT"] = intersection_latitude
+    data["INTERSECTION_LON"] = intersection_longitude
     data["COLLISION"] = collision
     print(data)
-    data.to_csv('./data.csv') 
+    data.to_csv('/Users/anthonyasilo/Desktop/vehicle_collision_data.csv') 
     
 if __name__ == "__main__":
     main()
