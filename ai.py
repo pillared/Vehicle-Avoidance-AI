@@ -12,7 +12,6 @@
 
 """
 When objects within 100m radius (close proximity), then detect whether they will collide or not. If yes, change route.
-Square/box - ice hockey table - 7 pucks, fling and wing, can u predict which ones will hit eachother
 """
 
 
@@ -231,10 +230,12 @@ Function oppose gets the "opposing" direction on a coordinate plane
 """
 
 #Method to calculate relative angle of random point near host vehicle to possible collision
+# inverts the current angle
 def oppose(x):
     return x+180 if x < 180 else x-180
 
 #Method to calculate relative angle of random point near host vehicle to possible collision
+# gets median (half angle) of two angles
 def half(x, y):
     
     if(abs(x-y) > 180):
@@ -302,8 +303,6 @@ def main():
     print("----------NEW:----------")
     HOST_A = Vehicle("Nissan Sentra", "914h80", 33.779398, -84.413279, 50, 0)
     HOST_A.describe()
-
-
 
     HOST_TIME_TO_INTERSECTION = 0
     GUEST_TIME_TO_INTERSECTION = 1
@@ -422,7 +421,7 @@ def main():
     data["INTERSECTION_LON"] = intersection_longitude
     data["COLLISION"] = collision
     print(data)
-    data.to_csv('/Users/anthonyasilo/Desktop/vehicle_collision_data.csv') 
+    data.to_csv('./vehicle_collision_data.csv') 
     
 if __name__ == "__main__":
     main()
